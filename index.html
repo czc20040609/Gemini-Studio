@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>Gemini Studio</title>
+  <style>
+    /* 基础重置，确保无边距且配合无边框窗口的圆角 */
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+      border-radius: 12px;
+      overflow: hidden;
+      background-color: #ffffff;
+    }
+
+    /* 顶部导航栏 - 纯白背景与精致阴影 */
+    .title-bar {
+      position: relative;
+      height: 52px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      z-index: 100;
+      -webkit-app-region: drag; 
+      background: #ffffff; 
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+    }
+
+    /* 品牌标识区域 */
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* 修改此处：为本地图片设置合适的宽高和自适应 */
+    .brand-icon {
+      width: 22px;
+      height: 22px;
+      object-fit: contain; /* 确保图片完整显示不拉伸 */
+    }
+
+    .title-text {
+      color: #0f172a;
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: 0.5px;
+    }
+
+    /* 右侧窗口控制按钮区域 */
+    .window-controls {
+      display: flex;
+      gap: 12px;
+      -webkit-app-region: no-drag;
+    }
+
+    /* 胶囊图形按钮样式 */
+    .icon-btn {
+      background-color: transparent;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 16px; 
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      color: #64748b;
+    }
+
+    .icon-btn:hover {
+      background-color: rgba(2, 132, 199, 0.1); 
+      color: #0284c7;
+    }
+
+    .icon-btn:active {
+      transform: scale(0.92);
+    }
+
+    .icon-btn svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+
+    .icon-btn.close:hover {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+    }
+
+    /* 内部网页视图容器 */
+    webview {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      border: none;
+      background-color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="title-bar">
+    <div class="brand">
+      <img class="brand-icon" src="./assents/icon.ico" alt="Gemini Logo" />
+      <div class="title-text">Gemini Studio</div>
+    </div>
+    <div class="window-controls">
+      <button class="icon-btn" onclick="window.electronAPI.controlWindow('最小化')">
+        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      </button>
+      <button class="icon-btn" onclick="window.electronAPI.controlWindow('最大化')">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>
+      </button>
+      <button class="icon-btn close" onclick="window.electronAPI.controlWindow('关闭')">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+  </div>
+
+  <webview id="gemini-view" src="https://gemini.google.com/app" allowpopups></webview>
+
+  <script>
+    const webview = document.getElementById('gemini-view');
+
+    webview.addEventListener('dom-ready', () => {
+      const customCSS = `
+        ::-webkit-scrollbar {
+          width: 8px !important;
+          background-color: transparent !important;
+        }
+        ::-webkit-scrollbar-thumb {
+          background-color: #bae6fd !important;
+          border-radius: 999px !important;
+          border: 2px solid #ffffff !important; 
+        }
+        ::-webkit-scrollbar-thumb:hover {
+          background-color: #7dd3fc !important;
+        }
+      `;
+
+      webview.insertCSS(customCSS).catch(err => console.error('CSS 注入失败:', err));
+    });
+  </script>
+</body>
+</html>
